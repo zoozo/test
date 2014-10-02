@@ -7,22 +7,6 @@
 
 using namespace std;
 
-void redis_set(redisContext* c, string& key, string& value){
-    /* Set a key */
-    redisReply *reply;
-    reply = (redisReply*)redisCommand(c,"SET %s %s", key.c_str(), value.c_str());
-    //printf("SET: %s\n", reply->str);
-    freeReplyObject(reply);
-}
-
-void redis_get(redisContext* c, string& key, string& val){
-    /* Set a key */
-    redisReply *reply;
-    reply = (redisReply*)redisCommand(c,"GET %s", key.c_str());
-    val = reply->str;
-    //printf("SET: %s\n", reply->str);
-    freeReplyObject(reply);
-}
 int main(int argc, char **argv) {
      srand (time(NULL));
 
