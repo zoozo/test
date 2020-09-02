@@ -71,6 +71,6 @@ int main(int argc, char** argv) {
       }
       cout<<key<<":"<<val<<endl;
   }
-    delete db;
-    return 0;
+  delete db;
+  return 0;
 }

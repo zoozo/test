@@ -1,5 +1,5 @@
 UP_CC = g++
-LIB = -lzmq -L/usr/local/lib -levent
+LIB = -lzmq -L/usr/local/lib 
 INC = 
 CPPS = zmq_subscriber.cpp \
 

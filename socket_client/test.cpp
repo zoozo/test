@@ -28,6 +28,10 @@ void read_file(const string& file, vector<string>& data){
 
 int main(int argc ,char** argv){
     cout<<"start"<<endl;
+    if(argc != 5){
+        cout<<"ip port file usleep"<<endl;
+        return 0;
+    }
 
     string ip = argv[1];
     int port = atoi(argv[2]);
