@@ -67,7 +67,7 @@ int main ()
          //Lock the mutex
          scoped_lock<interprocess_mutex> lock(data->mutex);
          std::printf(data->items[(data->current_line++) % shared_memory_log::NumItems]
-                  ,"%s_%d", "process_a", i);
+                  ,"%s__%d", "pr---ss_a", i);
          sleep(1);
          cout<<i<<endl;
          if(i == (shared_memory_log::NumItems-1))
@@ -76,7 +76,7 @@ int main ()
       }
 
       //Wait until the other process ends
-      cout<<__LINE__<<endl;
+      cout<<"aa:"<<__LINE__<<endl;
       while(1){
          scoped_lock<interprocess_mutex> lock(data->mutex);
          if(data->end_b)

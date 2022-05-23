@@ -6,7 +6,9 @@
 
 using namespace std;
 
-static const string PUBLISH_ENDPOINT = "tcp://*:6666";
+/*
+./zmq_publisher "tcp://127.0.0.1:4557" ssss
+*/
 
 int main(int argc, char *argv[]) {
 
@@ -17,23 +19,16 @@ int main(int argc, char *argv[]) {
   zmq::socket_t socket (context, ZMQ_PUB);
 
   // Open the connection
-  cout << "Binding to " << PUBLISH_ENDPOINT << "..." << endl;
-  socket.bind(PUBLISH_ENDPOINT);
+  cout << "Binding to " << argv[1] << "..." << endl;
+  //socket.connect(argv[1]);
+  socket.connect(argv[1]);
 
   // Pause to connect
   this_thread::sleep_for(chrono::milliseconds(1000));
 
   // Number of messages sent
-  int count = 0;
 
-  while(true) {
-
-    // Current time in ms
-    unsigned long long ms = chrono::system_clock::now().time_since_epoch() /
-        chrono::milliseconds(1);
-
-    count++;
-    string text = "Hello at " + boost::lexical_cast<string>(count);
+    string text = argv[2];
 
     // Create a message and feed data into it
     zmq::message_t message(text.length());
@@ -43,13 +38,8 @@ int main(int argc, char *argv[]) {
     // Send it off to any subscribers
     socket.send(message);
 
-    if(count % 10000 == 0)
-      cout << "[SENT] #" << count << " at " << ms << ": " << text << endl;
-
-    //this_thread::sleep_for(chrono::microseconds(10));
-  }
 
   // Unreachable, but for good measure
-  socket.disconnect(PUBLISH_ENDPOINT);
+  socket.disconnect(argv[1]);
   return 0;
 }

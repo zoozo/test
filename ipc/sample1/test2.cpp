@@ -62,7 +62,7 @@ int main ()
       std::sprintf(data->items[(data->current_line++) % shared_memory_log::NumItems]
                ,"%s_%d", "process_a", i);
       sleep(1);
-      cout<<"["<<i<<"]"<<endl;
+      cout<<"["<<i<<"]["<<data->items[i]<<"]"<<endl;
       if(i == (shared_memory_log::NumItems-1))
          data->end_b = true;
       //Mutex is released here

@@ -4,11 +4,18 @@
 #define EXTRACT_U_1(p)  ((uint8_t)(*(p)))
 #define ND_ISGRAPH(c)      ((c) > 0x20 && (c) <= 0x7E)
 
-int main () {
+int main (int argc, char** argv) {
     //  Prepare our context and socket
+    std::string host = argv[1];
     zmq::context_t context;
     zmq::socket_t socket (context, ZMQ_REP);
-    socket.bind ("ipc:///tmp/tradetron_spot");
+    //int timeout = 1000;
+    //int hwm = 1;
+    //zmq_setsockopt (socket, ZMQ_RCVTIMEO, &timeout, sizeof(timeout));
+    //zmq_setsockopt (socket, ZMQ_SNDTIMEO, &timeout, sizeof(timeout));
+    //zmq_setsockopt (socket, ZMQ_SNDHWM, &hwm, sizeof(hwm));
+
+    socket.bind (host); //"tcp://127.0.0.1:9999
 
     while (true) {
 

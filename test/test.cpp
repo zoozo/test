@@ -1,41 +1,46 @@
-#include <iostream>
-#include <boost/circular_buffer.hpp>
-using namespace std;
+#include <openssl/sha.h>
+#include <openssl/hmac.h>
 
-void func(boost::circular_buffer<int>& cb){
-    cout<<"------------------------------"<<endl;
-    for(boost::circular_buffer< int >::reverse_iterator i = cb.rbegin(); i != cb.rend() ; i++){
-        cout<<*i<<endl;
-    }
+#include <string>
+#include <array>
+#include<iostream>
+
+std::string CalcHmacSHA256(std::string decodedKey, std::string msg)
+{
+    std::array<unsigned char, EVP_MAX_MD_SIZE> hash;
+    unsigned int hashLen;
+
+    HMAC(
+            EVP_sha256(),
+            decodedKey.c_str(),
+            static_cast<int>(decodedKey.size()),
+            reinterpret_cast<unsigned char const*>(msg.c_str()),
+            static_cast<int>(msg.size()),
+            hash.data(),
+            &hashLen
+        );
+
+    return std::string{reinterpret_cast<char const*>(hash.data()), hashLen};
 }
-int main(int argc, char** argv){
-    int i1 = 1;
-    int i2 = 2;
-    int i3 = 3;
-    cout<<(i3 & 1)<<endl;
-    cout<<(i3 & 2)<<endl;
-    return 0;
-    boost::circular_buffer<int> cb(3);
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
-    cb.push_back(10);
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
-    cb.push_back(11);
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
-    cb.push_back(12);
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
-    cb.push_back(13);
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
-    //cb.clear();
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
-    cb.push_back(14);
-    cout<<"size:"<<cb.size() <<", back:"<<cb.back()<<endl;
-    func(cb);
+unsigned char *mx_hmac_sha256(const void *key, int keylen,
+        const unsigned char *data, int datalen,
+        unsigned char *result, unsigned int *resultlen) {
+    return HMAC(EVP_sha256(), key, keylen, data, datalen, result, resultlen);
+}
 
+int main(int argc, char* argv[]){
+    if(argc != 3){
+        std::cout<<argv[0]<<" key message"<<std::endl;
+        exit(0);
+    }
+    std::string key = argv[1];
+    std::string data = argv[2];
+    unsigned char *result = NULL;
+    unsigned int resultlen = -1;
+    result = mx_hmac_sha256(reinterpret_cast<const void *>(key.c_str()), key.size(), reinterpret_cast<unsigned char const*>(data.c_str()), data.size(), result, &resultlen);
+    for (unsigned int i = 0; i < resultlen; i++){
+          printf("%02hhx", result[i]); // or just "%02X" if you are not using C11 or later
+    }
+    //std::cout<<CalcHmacSHA256(key, data)<<std::endl;
     return 0;
 }
